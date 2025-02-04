@@ -210,7 +210,7 @@ public class YTDL {
                          updateHandler: @escaping ProgressUpdate,
                          completionHandler: @escaping ProgressCompletion) throws {
         let options: PythonObject = [
-            "format": "best",
+            "format": YTDLDefaults.options["format"],
             "nocheckcertificate": true,
             "outtmpl": "%(id)s.%(ext)s",
             "progress_hooks": [statusCallback(updateHandler, completionHandler)],
@@ -226,7 +226,7 @@ public class YTDL {
     
     public func extractInfo(from url: URL) throws -> [Downloadable] {
         let options: PythonObject = [
-            "format": "best",
+            "format": YTDLDefaults.options["format"],
             "nocheckcertificate": true,
         ]
         let ydl = yt_dlp.YoutubeDL(options)
