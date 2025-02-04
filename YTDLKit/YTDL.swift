@@ -11,16 +11,16 @@ import Darwin
 import PythonKit
 import ZipArchive
 
-extension String: LocalizedError {
+extension String: @retroactive LocalizedError {
     
     public var errorDescription: String? { return self }
-
+    
 }
 
 public class YTDL {
     
     public static let shared = YTDL()
-
+    
     public var version: String!
     private var yt_dlp: PythonObject!
     
@@ -32,7 +32,7 @@ public class YTDL {
         setupPython()
         try? setupYTDL()
     }
-        
+    
     var documentsDirectory: URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
@@ -72,7 +72,7 @@ public class YTDL {
         PyEval_InitThreads()
         
         let sys = Python.import("sys")
-
+        
         let pythonVer = [
             sys.version_info.major,
             sys.version_info.minor,
@@ -92,12 +92,30 @@ public class YTDL {
             encoding: .utf8
         )
     }
-
+    
     enum YTDLDefaults {
         static let options: PythonObject = [
             "format": "best",
-            "outtmpl": "%(id)s.%(ext)s"
+            "outtmpl": "%(title)s-%(id)s.%(ext)s",
+            "cachedir": .init(stringLiteral: NSTemporaryDirectory())
         ]
+        
+        static let extraOptions: PythonObject = [
+            "format": YTDLDefaults.options["format"],
+            "nocheckcertificate": true,
+            "cachedir": YTDLDefaults.options["format"],
+        ]
+        
+        static func downloadOptions(progressHooks: PythonObject, playListItems: PythonObject) -> PythonObject {
+            return [
+                "format": YTDLDefaults.options["format"],
+                "outtmpl": YTDLDefaults.options["outtmpl"],
+                "nocheckcertificate": true,
+                "cachedir": YTDLDefaults.options["format"],
+                "progress_hooks": progressHooks,
+                "playlist_items": playListItems,
+            ]
+        }
     }
     
     private var ytdlPythonExecScript: String { "yt-dlp" }
@@ -113,7 +131,7 @@ public class YTDL {
             .appendingPathComponent("yt-dlp/yt-dlp").path
         let verFilePath = URL(fileURLWithPath: moduleDestPath)
             .appendingPathComponent(".version").path
-
+        
         // Remove existing installation if newer version is available
         if let infoPlistVer = module.infoDictionary?["YT_DLP_VER"] as? String,
            let currVer = try? String(contentsOfFile: verFilePath),
@@ -129,7 +147,7 @@ public class YTDL {
                 toDestination: moduleDestPath
             )
         }
-
+        
         // Add module to `sys.path`
         guard
             let sys = try? Python.attemptImport("sys")
@@ -150,7 +168,7 @@ public class YTDL {
                 "": NSTemporaryDirectory()
             ]
         )
-
+        
         // Import module
         guard
             let module = try? Python.attemptImport("yt_dlp"),
@@ -158,7 +176,7 @@ public class YTDL {
         else {
             throw "Failed to import 'yt-dlp'"
         }
-
+        
         print("yt-dlp: \(version)")
         self.version = version
         self.yt_dlp = module
@@ -209,13 +227,9 @@ public class YTDL {
     public func download(from url: URL, playlistIdx: Int = 1,
                          updateHandler: @escaping ProgressUpdate,
                          completionHandler: @escaping ProgressCompletion) throws {
-        let options: PythonObject = [
-            "format": "best",
-            "nocheckcertificate": true,
-            "outtmpl": "%(id)s.%(ext)s",
-            "progress_hooks": [statusCallback(updateHandler, completionHandler)],
-            "playlist_items": PythonObject("\(playlistIdx)")
-        ]
+        let progressHooks: PythonObject = [statusCallback(updateHandler, completionHandler)]
+        let playListItems: PythonObject = .init(integerLiteral: playlistIdx)
+        let options = YTDLDefaults.downloadOptions(progressHooks: progressHooks, playListItems: playListItems)
         let ydl = yt_dlp.YoutubeDL(options)
         try ydl.extract_info.throwing.dynamicallyCall(
             withKeywordArguments: [
@@ -225,11 +239,7 @@ public class YTDL {
     }
     
     public func extractInfo(from url: URL) throws -> [Downloadable] {
-        let options: PythonObject = [
-            "format": "best",
-            "nocheckcertificate": true,
-        ]
-        let ydl = yt_dlp.YoutubeDL(options)
+        let ydl = yt_dlp.YoutubeDL(YTDLDefaults.extraOptions)
         let info = try ydl.extract_info.throwing.dynamicallyCall(
             withKeywordArguments: [
                 "": url.absoluteString,
@@ -257,10 +267,10 @@ public class YTDL {
             let id = info.checking["id"].flatMap({ String($0) }),
             let title = info.checking["title"].flatMap({ String($0) })
         else { throw "Failed to get `id` or `title`" }
-
+        
         let formatSel = ydl.build_format_selector(YTDLDefaults.options["format"])
         let formats = try formatSel.throwing.dynamicallyCall(withArguments: info)
-
+        
         var results: [Format] = []
         for format in formats {
             let width = format.checking["width"]
@@ -287,7 +297,7 @@ public class YTDL {
         guard
             let entries = info.checking["entries"]
         else { throw "No entries" }
-
+        
         var results: [PlaylistEntry] = []
         for entry in entries {
             guard
@@ -305,7 +315,7 @@ public class YTDL {
                 .flatMap({ Int64($0) })
             let fileSizeApprox = entry.checking["filesize_approx"]
                 .flatMap({ Int64($0) })
-
+            
             let result = PlaylistEntry(
                 id: id, title: title,
                 browserUrl: browserUrl,
@@ -341,7 +351,7 @@ public protocol Downloadable: CustomStringConvertible {
     var fileSize: Int64? { get }
     
     var isUniqueTitle: Bool { get }
-
+    
 }
 
 extension Downloadable {
@@ -352,16 +362,16 @@ extension Downloadable {
         if isUniqueTitle {
             parts.append(title)
         }
-
+        
         if let fileSize = fileSize {
             let sizeString = Formatter.shared.byteFormatter.string(fromByteCount: fileSize)
             parts.append(sizeString)
         }
-
+        
         if let width = width, let height = height {
             parts.append("\(width)x\(height)")
         }
-
+        
         let desc = parts.joined(separator: ", ")
         if desc.count == 0 {
             return id
@@ -369,7 +379,7 @@ extension Downloadable {
         
         return desc
     }
-
+    
 }
 
 public struct PlaylistEntry: Downloadable {
@@ -395,5 +405,5 @@ public struct Format: Downloadable {
     public let fileSize: Int64?
     
     public var isUniqueTitle: Bool { false }
-
+    
 }
