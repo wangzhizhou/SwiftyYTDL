@@ -96,7 +96,7 @@
 		778E8C15288E6E3900839742 /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = "Thirdparties/Python-iOS-support/OpenSSL.xcframework"; sourceTree = "<group>"; };
 		778E8C16288E6E3900839742 /* XZ.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = XZ.xcframework; path = "Thirdparties/Python-iOS-support/XZ.xcframework"; sourceTree = "<group>"; };
 		77923C812B2A3284009FCBB5 /* YTDL.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = YTDL.plist; sourceTree = "<group>"; };
-		77F76BFE288871110034E181 /* SwiftyYTDL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftyYTDL.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		77F76BFE288871110034E181 /* 💊SwiftyYTDL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "💊SwiftyYTDL.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		77F76C01288871110034E181 /* SwiftyYTDLApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyYTDLApp.swift; sourceTree = "<group>"; };
 		77F76C03288871110034E181 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		77F76C05288871150034E181 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -190,7 +190,7 @@
 		77F76BFF288871110034E181 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				77F76BFE288871110034E181 /* SwiftyYTDL.app */,
+				77F76BFE288871110034E181 /* 💊SwiftyYTDL.app */,
 				77F76C14288872910034E181 /* YTDLKit.framework */,
 				77F76C1D288872920034E181 /* YTDLKitTests.xctest */,
 			);
@@ -286,7 +286,7 @@
 			);
 			name = SwiftyYTDL;
 			productName = SwiftyYTDL;
-			productReference = 77F76BFE288871110034E181 /* SwiftyYTDL.app */;
+			productReference = 77F76BFE288871110034E181 /* 💊SwiftyYTDL.app */;
 			productType = "com.apple.product-type.application";
 		};
 		77F76C13288872910034E181 /* YTDLKit */ = {
@@ -605,7 +605,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.joker.SwiftyYTDL;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "💊$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -638,7 +638,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.joker.SwiftyYTDL;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "💊$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -723,7 +723,7 @@
 				DEVELOPMENT_TEAM = 2N62934Y28;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.kostyshyn.YTDLKitTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.joker.YTDLKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -742,7 +742,7 @@
 				DEVELOPMENT_TEAM = 2N62934Y28;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.kostyshyn.YTDLKitTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.joker.YTDLKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
