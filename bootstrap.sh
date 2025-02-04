@@ -28,8 +28,8 @@ tar xzf $DEPS_DIR/$PYTHON_SUPPORT.tar.gz \
 rm "$DEPS_DIR/$PYTHON_SUPPORT.tar.gz"
 
 echo "[*] compressing Python..."
-cd $DEPS_DIR/$PYTHON_SUPPORT/Python/Resources/
-zip -r -q python.zip lib/
+cd $DEPS_DIR/$PYTHON_SUPPORT/Python/Resources
+zip -r -q $DEPS_DIR/python.zip lib/
 
 echo "[*] updating Python version to $PYTHON_VER inside YTDLKit's plist..."
 plutil -replace PYTHON_VER -string $PYTHON_VER "$YTDL_PLIST"
@@ -37,7 +37,8 @@ plutil -replace PYTHON_VER -string $PYTHON_VER "$YTDL_PLIST"
 # https://github.com/yt-dlp/yt-dlp
 
 echo "[*] downloading yt-dlp-$YT_DLP_VER..."
-curl -L -o "$DEPS_DIR/yt-dlp" --create-dirs \
+curl -L --create-dirs --progress-bar    \
+    -o "$DEPS_DIR/yt-dlp"               \
 	https://github.com/yt-dlp/yt-dlp/releases/download/$YT_DLP_VER/yt-dlp
 
 echo "[*] compressing yt-dlp..."
