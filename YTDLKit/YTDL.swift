@@ -66,6 +66,9 @@ public class YTDL {
         setenv("PYTHONHOME", pythonHome, 1)
         setenv("PYTHONPATH", "\(pythonHome)/lib/python3.10/:\(pythonHome)/lib/python3.10/site-packages", 1)
         setenv("TMP", NSTemporaryDirectory(), 1)
+#if DEBUG
+        setenv("PYTHON_LOADER_LOGGING","TRUE", 1)
+#endif
         
         // libPython is statically linked, so we can force init it here
         Py_Initialize()
